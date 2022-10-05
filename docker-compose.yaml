@@ -1,0 +1,18 @@
+services:
+  csp-logger:
+    image: scr.somogyi.xyz/csp-logger:latest
+    container_name: csplogger
+    restart: always
+    networks:
+      - traefik_web
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.csplogger.rule=Host(`csp.somogyi.xyz`)
+      - traefik.port=80
+      - traefik.http.routers.csplogger.entrypoints=websecure
+      - traefik.http.routers.csplogger.tls=true
+      - traefik.http.routers.csplogger.middlewares=middlewares-secure-headers@file,middlewares-rate-limit@file,test-ipwhitelist@file
+      - traefik.http.services.csplogger.loadbalancer.server.port=80
+networks:
+  traefik_web:
+    external: true
